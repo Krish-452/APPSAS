@@ -1,41 +1,50 @@
-import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
-import { Sidebar } from './components/layout/Sidebar'; // Note the curly braces based on our last fix
+import React from 'react';
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 
-// Import Pages
-import StudentDashboard from './pages/StudentDashboard';
-import StudyPlanner from './pages/StudyPlanner';
-import SmartQuiz from './pages/SmartQuiz';
-import ConceptExplainer from './pages/ConceptExplainer';
-import Login from './pages/Login';
+// --- Imports ---
+import Navbar from './components/layout/Navbar'; 
+import KanbanBoard from './pages/KanbanBoard';
+import EquipmentList from './pages/EquipmentList';
+import RequestForm from './pages/RequestForm';
+import CalendarView from './pages/CalendarView'; 
+import Login from './pages/Login'; 
+import AnalyticsDashboard from './pages/AnalyticsDashboard'; 
+import Signup from './pages/Signup';
+// REMOVED: import AssigneeCard from './components/AssigneeCard'; 
 
-// Layout Component (Keeps the Sidebar on the left, changes content on the right)
-const AppLayout = () => {
+// --- Layout Component ---
+const DashboardLayout = () => {
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden">
-      <Sidebar />
-      <main className="flex-1 overflow-y-auto">
-        <Outlet /> {/* This is where the pages (Dashboard, Planner, etc.) will appear */}
+    <div className="flex min-h-screen bg-slate-50">
+      <Navbar />
+      <main className="flex-1 ml-64 p-8 overflow-y-auto">
+        
+        {/* REMOVED: The <AssigneeCard /> block is gone from here. */}
+
+        {/* This loads your pages (Kanban, Equipment, etc.) directly */}
+        <Outlet />
       </main>
     </div>
   );
 };
 
+// --- Main App Component ---
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
-        {/* Public Route: Login (No Sidebar) */}
         <Route path="/login" element={<Login />} />
-
-        {/* Private Routes: The App (With Sidebar) */}
-        <Route element={<AppLayout />}>
-          <Route path="/" element={<StudentDashboard />} />
-          <Route path="/planner" element={<StudyPlanner />} />
-          <Route path="/quiz" element={<SmartQuiz />} />
-          <Route path="/learn" element={<ConceptExplainer />} />
+        <Route path="/signup" element={<Signup />} />
+        {/* Dashboard Routes */}
+        <Route element={<DashboardLayout />}>
+          <Route path="/" element={<KanbanBoard />} />
+          <Route path="/equipment" element={<EquipmentList />} />
+          <Route path="/create" element={<RequestForm />} />
+          <Route path="/calendar" element={<CalendarView />} />
+          <Route path="/analytics" element={<AnalyticsDashboard />} />
         </Route>
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 
