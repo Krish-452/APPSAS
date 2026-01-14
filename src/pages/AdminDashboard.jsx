@@ -1,96 +1,123 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, BookOpen, Activity, AlertTriangle } from "lucide-react";
+import { Calendar as CalendarIcon, Plus, Trash2, Users } from "lucide-react";
 
 export default function AdminDashboard() {
-  // Mock Data for Students
-  const students = [
-    { id: "ST-001", name: "Satvik Patel", email: "satvik@uni.edu", status: "Active", progress: "85%" },
-    { id: "ST-002", name: "Krish Poddar", email: "krish@uni.edu", status: "Active", progress: "92%" },
-    { id: "ST-003", name: "Neev Patel", email: "neev@uni.edu", status: "Inactive", progress: "12%" },
-  ];
+  // State to simulate a database (Addressing Neev's concern about logic)
+  const [examDate, setExamDate] = useState("");
+  const [examSubject, setExamSubject] = useState("");
+  
+  const [schedule, setSchedule] = useState([
+    { id: 1, subject: "Mathematics Finals", date: "2026-03-15", status: "Scheduled" },
+    { id: 2, subject: "Physics Mid-Term", date: "2026-02-10", status: "Pending" },
+  ]);
+
+  const handleAddSchedule = () => {
+    if (!examDate || !examSubject) return; // Prevent empty adds
+    
+    const newExam = {
+      id: Date.now(),
+      subject: examSubject,
+      date: examDate,
+      status: "Scheduled"
+    };
+    
+    setSchedule([...schedule, newExam]);
+    setExamSubject("");
+    setExamDate("");
+  };
+
+  const handleDelete = (id) => {
+    setSchedule(schedule.filter(item => item.id !== id));
+  };
 
   return (
-    <div className="p-8 space-y-8 bg-slate-50 min-h-screen">
+    <div className="p-6 space-y-6 bg-slate-50 min-h-screen">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900">Admin Portal</h2>
-          <p className="text-slate-500">Manage students, content, and system health.</p>
+          <h1 className="text-3xl font-bold text-slate-900">Admin Portal</h1>
+          <p className="text-slate-500">Manage student schedules and content.</p>
         </div>
-        <Button variant="destructive">System Maintenance</Button>
+        <div className="bg-white p-2 px-4 rounded-full border shadow-sm flex items-center gap-2 text-sm font-semibold text-slate-700">
+           <Users size={16} /> Admin Mode
+        </div>
       </div>
 
-      {/* Admin Stats */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Students</CardTitle>
-            <Users className="h-4 w-4 text-blue-500" />
+      {/* Grid Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        {/* LEFT COLUMN: Add Date/Schedule Form */}
+        <Card className="shadow-md">
+          <CardHeader>
+            <CardTitle>Add Exam Schedule</CardTitle>
+            <CardDescription>Assign new deadlines to students.</CardDescription>
           </CardHeader>
-          <CardContent><div className="text-2xl font-bold">1,204</div></CardContent>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Subject Name</Label>
+              <Input 
+                placeholder="e.g. Chemistry Lab" 
+                value={examSubject}
+                onChange={(e) => setExamSubject(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Exam Date</Label>
+              <div className="flex items-center gap-2">
+                <CalendarIcon className="text-slate-400" size={20}/>
+                <Input 
+                  type="date" 
+                  value={examDate}
+                  onChange={(e) => setExamDate(e.target.value)}
+                />
+              </div>
+            </div>
+            <Button onClick={handleAddSchedule} className="w-full bg-slate-900 hover:bg-slate-800">
+              <Plus size={16} className="mr-2" /> Add to Calendar
+            </Button>
+          </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Active Quizzes</CardTitle>
-            <BookOpen className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent><div className="text-2xl font-bold">45</div></CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Server Status</CardTitle>
-            <Activity className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent><div className="text-2xl font-bold text-green-600">Online</div></CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Flagged Issues</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent><div className="text-2xl font-bold text-red-600">3</div></CardContent>
-        </Card>
-      </div>
 
-      {/* Student Management Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Student Database</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Student ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Progress</TableHead>
-                <TableHead className="text-right">Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {students.map((student) => (
-                <TableRow key={student.id}>
-                  <TableCell className="font-medium">{student.id}</TableCell>
-                  <TableCell>{student.name}</TableCell>
-                  <TableCell>{student.email}</TableCell>
-                  <TableCell>
-                    <span className={`px-2 py-1 rounded-full text-xs ${student.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {student.status}
-                    </span>
-                  </TableCell>
-                  <TableCell>{student.progress}</TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="outline" size="sm">Edit</Button>
-                  </TableCell>
+        {/* RIGHT COLUMN: The List (Simulating Database) */}
+        <Card className="shadow-md">
+          <CardHeader>
+            <CardTitle>Upcoming Examinations</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Subject</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {schedule.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell className="font-medium">{item.subject}</TableCell>
+                    <TableCell>{item.date}</TableCell>
+                    <TableCell className="text-right">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={() => handleDelete(item.id)}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 size={16} />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
