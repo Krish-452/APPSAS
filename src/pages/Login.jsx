@@ -14,14 +14,17 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+    
     setTimeout(() => {
       setLoading(false);
-      // If email contains "admin", go to admin panel (Quick hack for demo)
       const email = document.getElementById("email").value;
-      if (email.includes("admin")) {
+
+      // ✅ LOGIC UPDATED: Exact match required for Admin
+      if (email === "Admin@gmail.com") {
         navigate("/admin");
       } else {
-        navigate("/");
+        // Redirect regular students to the dashboard
+        navigate("/dashboard");
       }
     }, 1000);
   };
@@ -44,6 +47,7 @@ export default function Login() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
+            
             <div className="grid w-full items-center gap-4">
               {!isLogin && (
                 <div className="flex flex-col space-y-1.5">
