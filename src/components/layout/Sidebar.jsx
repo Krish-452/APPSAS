@@ -1,86 +1,63 @@
-import * as React from "react"
+import { Link, useLocation } from "react-router-dom";
+import { LayoutDashboard, Calendar, BookOpen, BrainCircuit, LogOut, GraduationCap } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
-import { cn } from "@/lib/utils"
+// Now accepts an 'isOpen' prop to control visibility
+export function Sidebar({ isOpen }) {
+  const location = useLocation();
 
-const Table = React.forwardRef(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-auto">
-    <table
-      ref={ref}
-      className={cn("w-full caption-bottom text-sm", className)}
-      {...props} />
-  </div>
-))
-Table.displayName = "Table"
+  const navItems = [
+    { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/" },
+    { name: "Study Planner", icon: <Calendar size={20} />, path: "/planner" },
+    { name: "Smart Quiz", icon: <BookOpen size={20} />, path: "/quiz" },
+    { name: "Concept Explainer", icon: <BrainCircuit size={20} />, path: "/learn" },
+  ];
 
-const TableHeader = React.forwardRef(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn("[&_tr]:border-b", className)} {...props} />
-))
-TableHeader.displayName = "TableHeader"
+  return (
+    <div 
+      className={`
+        h-screen bg-slate-900 text-white flex flex-col shadow-xl transition-all duration-300 ease-in-out
+        ${isOpen ? "w-64 p-4 translate-x-0" : "w-0 p-0 -translate-x-full overflow-hidden"}
+      `}
+    >
+      {/* Content Container - Only visible when open */}
+      <div className={`flex flex-col h-full ${isOpen ? "opacity-100" : "opacity-0"} transition-opacity duration-200`}>
+        
+        <div className="flex items-center gap-2 mb-8 px-2 whitespace-nowrap">
+          <GraduationCap className="h-8 w-8 text-blue-400 shrink-0" />
+          <div>
+            <h1 className="text-xl font-bold tracking-wider">APPSAS</h1>
+            <p className="text-xs text-slate-400">AI Study Assistant</p>
+          </div>
+        </div>
 
-const TableBody = React.forwardRef(({ className, ...props }, ref) => (
-  <tbody
-    ref={ref}
-    className={cn("[&_tr:last-child]:border-0", className)}
-    {...props} />
-))
-TableBody.displayName = "TableBody"
+        <nav className="flex-1 space-y-2">
+          {navItems.map((item) => (
+            <Link to={item.path} key={item.path}>
+              <Button
+                variant={location.pathname === item.path ? "secondary" : "ghost"}
+                className={`w-full justify-start gap-3 mb-1 ${
+                  location.pathname === item.path 
+                    ? "bg-blue-600 text-white hover:bg-blue-700" 
+                    : "text-slate-300 hover:text-white hover:bg-slate-800"
+                }`}
+              >
+                {item.icon}
+                <span className="whitespace-nowrap">{item.name}</span>
+              </Button>
+            </Link>
+          ))}
+        </nav>
 
-const TableFooter = React.forwardRef(({ className, ...props }, ref) => (
-  <tfoot
-    ref={ref}
-    className={cn("border-t bg-muted/50 font-medium [&>tr]:last:border-b-0", className)}
-    {...props} />
-))
-TableFooter.displayName = "TableFooter"
+        <Separator className="bg-slate-700 my-4" />
 
-const TableRow = React.forwardRef(({ className, ...props }, ref) => (
-  <tr
-    ref={ref}
-    className={cn(
-      "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
-      className
-    )}
-    {...props} />
-))
-TableRow.displayName = "TableRow"
-
-const TableHead = React.forwardRef(({ className, ...props }, ref) => (
-  <th
-    ref={ref}
-    className={cn(
-      "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-      className
-    )}
-    {...props} />
-))
-TableHead.displayName = "TableHead"
-
-const TableCell = React.forwardRef(({ className, ...props }, ref) => (
-  <td
-    ref={ref}
-    className={cn(
-      "p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-      className
-    )}
-    {...props} />
-))
-TableCell.displayName = "TableCell"
-
-const TableCaption = React.forwardRef(({ className, ...props }, ref) => (
-  <caption
-    ref={ref}
-    className={cn("mt-4 text-sm text-muted-foreground", className)}
-    {...props} />
-))
-TableCaption.displayName = "TableCaption"
-
-export {
-  Table,
-  TableHeader,
-  TableBody,
-  TableFooter,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableCaption,
+        <div className="mt-auto px-2">
+          <Button variant="destructive" className="w-full gap-2 whitespace-nowrap">
+            <LogOut size={16} /> Logout
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 }
