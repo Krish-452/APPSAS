@@ -1,134 +1,90 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { useNavigate } from "react-router-dom"; // Import the navigation hook
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { BookOpen, Target, Clock, AlertCircle } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Target, BookOpen, AlertCircle } from "lucide-react";
 
-// ✅ THIS LINE FIXES THE ERROR:
 export default function StudentDashboard() {
+  const navigate = useNavigate(); // Initialize navigation
+
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-6 space-y-6">
       {/* Header Section */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center bg-white p-6 rounded-lg shadow-sm border">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900">Dashboard</h2>
-          <p className="text-slate-500">Welcome back! Here is your AI study breakdown for today.</p>
+          <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
+          <p className="text-slate-500 mt-2">
+            Welcome back! Here is your AI study breakdown for today.
+          </p>
         </div>
-        <div className="flex gap-2">
-            <Button>Start AI Study Session</Button>
-        </div>
+        
+        {/* ADDED: onClick handler to navigate to Concept Explainer */}
+        <Button 
+          className="bg-black hover:bg-slate-800 text-white"
+          onClick={() => navigate("/learn")} 
+        >
+          Start AI Study Session
+        </Button>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {/* Stats Grid */}
+      <div className="grid gap-6 md:grid-cols-3">
+        
+        {/* Weekly Goal Card */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Weekly Goal</CardTitle>
-            <Target className="h-4 w-4 text-slate-500" />
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-slate-600">Weekly Goal</CardTitle>
+            <Target className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12/15 Hrs</div>
-            <Progress value={80} className="mt-2 h-2" />
-            <p className="text-xs text-slate-500 mt-2">80% completed</p>
+            <div className="text-2xl font-bold mb-2">12/15 Hrs</div>
+            <Progress value={80} className="h-2 mb-2" />
+            <p className="text-xs text-slate-500">80% completed</p>
           </CardContent>
         </Card>
 
+        {/* Quiz Accuracy Card */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Quiz Accuracy</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-slate-600">Quiz Accuracy</CardTitle>
             <BookOpen className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">88%</div>
-            <p className="text-xs text-slate-500 mt-1">+4% from last week</p>
+            <div className="text-2xl font-bold mb-2">88%</div>
+            <p className="text-xs text-green-600 font-medium">+4% from last week</p>
           </CardContent>
         </Card>
 
+        {/* Weak Area Card */}
         <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Weak Area</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-slate-600">Weak Area</CardTitle>
             <AlertCircle className="h-4 w-4 text-red-500" />
-            </CardHeader>
-            <CardContent>
-            <div className="text-2xl font-bold text-red-600">Calculus</div>
-            <Button variant="link" className="px-0 text-xs h-auto">View Practice Plan &rarr;</Button>
-            </CardContent>
-        </Card>
-
-        <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Study Streak</CardTitle>
-            <Clock className="h-4 w-4 text-blue-500" />
-            </CardHeader>
-            <CardContent>
-            <div className="text-2xl font-bold">5 Days</div>
-            <p className="text-xs text-slate-500 mt-1">Keep it up!</p>
-            </CardContent>
-        </Card>
-      </div>
-
-      {/* Main Content Split */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        
-        {/* Left Side: Upcoming Schedule */}
-        <Card className="col-span-4">
-          <CardHeader>
-            <CardTitle>Upcoming Study Schedule</CardTitle>
-            <CardDescription>Generated by AI based on your exam dates.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-6">
-                <div className="flex items-center justify-between border-b pb-4">
-                    <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-                            PHY
-                        </div>
-                        <div>
-                            <p className="font-medium">Thermodynamics Revision</p>
-                            <p className="text-sm text-slate-500">Chapter 4 • High Importance</p>
-                        </div>
-                    </div>
-                    <Badge variant="secondary">Today, 4:00 PM</Badge>
-                </div>
-                <div className="flex items-center justify-between border-b pb-4">
-                    <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded bg-purple-100 flex items-center justify-center text-purple-600 font-bold">
-                            MTH
-                        </div>
-                        <div>
-                            <p className="font-medium">Integration Practice Problems</p>
-                            <p className="text-sm text-slate-500">Set B • 20 Questions</p>
-                        </div>
-                    </div>
-                    <Badge variant="outline">Tomorrow, 10:00 AM</Badge>
-                </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Right Side: AI Insights */}
-        <Card className="col-span-3">
-          <CardHeader>
-            <CardTitle>AI Insights</CardTitle>
-            <CardDescription>Real-time suggestions.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <h4 className="font-semibold text-yellow-800 text-sm mb-1">Focus Recommended</h4>
-                <p className="text-xs text-yellow-700">
-                    You spent 40% less time on Chemistry this week compared to Physics.
-                </p>
-            </div>
-            
-            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                <h4 className="font-semibold text-green-800 text-sm mb-1">Performance Peak</h4>
-                <p className="text-xs text-green-700">
-                    You score highest on quizzes taken between 9 AM and 11 AM.
-                </p>
-            </div>
+            <div className="text-2xl font-bold text-red-600 mb-2">Calculus</div>
+            <Button 
+                variant="link" 
+                className="p-0 h-auto text-xs text-slate-900 underline"
+                onClick={() => navigate("/planner")} // Link this to planner as well if you like
+            >
+              View Practice Plan →
+            </Button>
           </CardContent>
         </Card>
       </div>
+
+      {/* Recent Activity Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Activity</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-sm text-slate-500">
+            No recent study sessions recorded today.
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
