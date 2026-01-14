@@ -1,18 +1,24 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom"; // Import useNavigate
 import { LayoutDashboard, Calendar, BookOpen, BrainCircuit, LogOut, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
-// Now accepts an 'isOpen' prop to control visibility
 export function Sidebar({ isOpen }) {
   const location = useLocation();
+  const navigate = useNavigate(); // Hook for navigation
 
   const navItems = [
-    { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/" },
+    // Changed path from "/" to "/dashboard"
+    { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/dashboard" },
     { name: "Study Planner", icon: <Calendar size={20} />, path: "/planner" },
     { name: "Smart Quiz", icon: <BookOpen size={20} />, path: "/quiz" },
     { name: "Concept Explainer", icon: <BrainCircuit size={20} />, path: "/learn" },
   ];
+
+  const handleLogout = () => {
+    // Perform any logout logic here (clearing tokens, etc.)
+    navigate("/"); // Redirect to Login page
+  };
 
   return (
     <div 
@@ -21,9 +27,7 @@ export function Sidebar({ isOpen }) {
         ${isOpen ? "w-64 p-4 translate-x-0" : "w-0 p-0 -translate-x-full overflow-hidden"}
       `}
     >
-      {/* Content Container - Only visible when open */}
       <div className={`flex flex-col h-full ${isOpen ? "opacity-100" : "opacity-0"} transition-opacity duration-200`}>
-        
         <div className="flex items-center gap-2 mb-8 px-2 whitespace-nowrap">
           <GraduationCap className="h-8 w-8 text-blue-400 shrink-0" />
           <div>
@@ -53,7 +57,12 @@ export function Sidebar({ isOpen }) {
         <Separator className="bg-slate-700 my-4" />
 
         <div className="mt-auto px-2">
-          <Button variant="destructive" className="w-full gap-2 whitespace-nowrap">
+          {/* Added onClick handler */}
+          <Button 
+            variant="destructive" 
+            className="w-full gap-2 whitespace-nowrap"
+            onClick={handleLogout}
+          >
             <LogOut size={16} /> Logout
           </Button>
         </div>
