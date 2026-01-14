@@ -1,23 +1,33 @@
-import { Link, useLocation, useNavigate } from "react-router-dom"; // Import useNavigate
-import { LayoutDashboard, Calendar, BookOpen, BrainCircuit, LogOut, GraduationCap } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { LayoutDashboard, Calendar, BookOpen, BrainCircuit, LogOut, GraduationCap, ShieldCheck, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 export function Sidebar({ isOpen }) {
   const location = useLocation();
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
 
-  const navItems = [
-    // Changed path from "/" to "/dashboard"
+  // Check if the user is currently on an admin page
+  const isAdmin = location.pathname.startsWith("/admin");
+
+  // Define menus for both roles
+  const studentItems = [
     { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/dashboard" },
     { name: "Study Planner", icon: <Calendar size={20} />, path: "/planner" },
     { name: "Smart Quiz", icon: <BookOpen size={20} />, path: "/quiz" },
     { name: "Concept Explainer", icon: <BrainCircuit size={20} />, path: "/learn" },
   ];
 
+  const adminItems = [
+    { name: "Admin Portal", icon: <ShieldCheck size={20} />, path: "/admin" },
+    // You can add more admin specific pages here if you create them
+    // { name: "Manage Students", icon: <Users size={20} />, path: "/admin/students" },
+  ];
+
+  const navItems = isAdmin ? adminItems : studentItems;
+
   const handleLogout = () => {
-    // Perform any logout logic here (clearing tokens, etc.)
-    navigate("/"); // Redirect to Login page
+    navigate("/");
   };
 
   return (
@@ -28,11 +38,19 @@ export function Sidebar({ isOpen }) {
       `}
     >
       <div className={`flex flex-col h-full ${isOpen ? "opacity-100" : "opacity-0"} transition-opacity duration-200`}>
+        
         <div className="flex items-center gap-2 mb-8 px-2 whitespace-nowrap">
-          <GraduationCap className="h-8 w-8 text-blue-400 shrink-0" />
+          {isAdmin ? (
+             <ShieldCheck className="h-8 w-8 text-red-500 shrink-0" />
+          ) : (
+             <GraduationCap className="h-8 w-8 text-blue-400 shrink-0" />
+          )}
+          
           <div>
             <h1 className="text-xl font-bold tracking-wider">APPSAS</h1>
-            <p className="text-xs text-slate-400">AI Study Assistant</p>
+            <p className="text-xs text-slate-400">
+                {isAdmin ? "Admin Administrator" : "AI Study Assistant"}
+            </p>
           </div>
         </div>
 
@@ -43,7 +61,7 @@ export function Sidebar({ isOpen }) {
                 variant={location.pathname === item.path ? "secondary" : "ghost"}
                 className={`w-full justify-start gap-3 mb-1 ${
                   location.pathname === item.path 
-                    ? "bg-blue-600 text-white hover:bg-blue-700" 
+                    ? (isAdmin ? "bg-red-600 text-white hover:bg-red-700" : "bg-blue-600 text-white hover:bg-blue-700")
                     : "text-slate-300 hover:text-white hover:bg-slate-800"
                 }`}
               >
@@ -57,7 +75,6 @@ export function Sidebar({ isOpen }) {
         <Separator className="bg-slate-700 my-4" />
 
         <div className="mt-auto px-2">
-          {/* Added onClick handler */}
           <Button 
             variant="destructive" 
             className="w-full gap-2 whitespace-nowrap"
