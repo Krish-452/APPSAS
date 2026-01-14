@@ -4,12 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { GraduationCap } from "lucide-react";
+import { GraduationCap, Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [isLogin, setIsLogin] = useState(true); // Toggle state
+  const [isLogin, setIsLogin] = useState(true); 
+  const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,12 +19,18 @@ export default function Login() {
     setTimeout(() => {
       setLoading(false);
       const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-      // ✅ LOGIC UPDATED: Exact match required for Admin
+      // Basic validation
+      if (password.length < 8) {
+        alert("Password must be at least 8 characters long.");
+        return;
+      }
+
+      // Admin Check
       if (email === "Admin@gmail.com") {
         navigate("/admin");
       } else {
-        // Redirect regular students to the dashboard
         navigate("/dashboard");
       }
     }, 1000);
@@ -55,14 +62,35 @@ export default function Login() {
                   <Input id="name" placeholder="John Doe" required />
                 </div>
               )}
+              
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="email">Email / ID</Label>
                 <Input id="email" placeholder="student@university.edu" required />
               </div>
-              <div className="flex flex-col space-y-1.5">
+
+              <div className="flex flex-col space-y-1.5 relative">
                 <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" placeholder="••••••••" required />
+                <div className="relative">
+                    <Input 
+                        id="password" 
+                        type={showPassword ? "text" : "password"} 
+                        placeholder="••••••••" 
+                        required 
+                        minLength={8} // Enforce 8 chars
+                    />
+                    <button 
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600"
+                    >
+                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                </div>
+                <p className="text-[10px] text-slate-500 mt-1">
+                    * Must be at least 8 characters long.
+                </p>
               </div>
+
             </div>
             <Button className="w-full mt-6 bg-blue-600 hover:bg-blue-700" disabled={loading}>
               {loading ? "Processing..." : (isLogin ? "Login" : "Sign Up")}
