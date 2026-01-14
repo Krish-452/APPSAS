@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 
 export default function SmartQuiz() {
   const [currentQ, setCurrentQ] = useState(0);
@@ -41,7 +41,7 @@ export default function SmartQuiz() {
     
     if (currentQ + 1 < questions.length) {
       setCurrentQ(currentQ + 1);
-      setSelected(""); // Reset selection
+      setSelected(""); 
     } else {
       setFinished(true);
     }
